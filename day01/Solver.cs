@@ -1,3 +1,5 @@
+using System.Text.RegularExpressions;
+
 class Solver
 {
     public long part1(string[] lines)
@@ -48,12 +50,13 @@ class Solver
 
     private (List<long>, List<long>) parse(string[] lines)
     {
+        string pattern = "\\s+";
         List<long> list1 = new List<long>();
         List<long> list2 = new List<long>();
 
         foreach (string line in lines)
         {
-            var parts = line.Split("   ");
+            var parts = Regex.Split(line, pattern);
             var first = parts[0];
             var second = parts[1];
 
