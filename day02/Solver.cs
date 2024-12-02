@@ -18,6 +18,36 @@ public class Solver
         return numSafeReports;
     }
 
+    public long part2(string[] lines)
+    {
+        var input = parse(lines);
+        long numSafeReports = 0;
+
+        foreach (var report in input)
+        {
+            if (reportIsSafe(report))
+            {
+                numSafeReports++;
+            }
+            else
+            {
+                for (int i = 0; i < report.Count; i++)
+                {
+                    var reportCopy = new List<long>(report);
+                    reportCopy.RemoveAt(i);
+
+                    if (reportIsSafe(reportCopy))
+                    {
+                        numSafeReports ++;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return numSafeReports;
+    }
+
     bool reportIsSafe(List<long> values)
     {
         (long firstDelta, long firstAbsDelta, long firstSign) = compare(values[1], values[0]);
@@ -41,12 +71,6 @@ public class Solver
 
     bool isSafe(long absDelta, long sign, long targetSign) {
         return absDelta >= 1 && absDelta <= 3 && sign == targetSign;
-    }
-
-    public long part2(string[] lines)
-    {
-        var input = parse(lines);
-        return 0;
     }
 
     private List<List<long>> parse(string[] lines)
