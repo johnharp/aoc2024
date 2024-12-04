@@ -3,41 +3,92 @@ namespace day04;
 using System.Text.RegularExpressions;
 using System.Linq;
 using System.Xml.Schema;
-using System.Security.Cryptography.X509Certificates;
 
 public class Solver
 {
-    public long part1(string[] lines)
+    private string[] data;
+    private string pattern = "XMAS";
+
+    public Solver(string[] lines)
     {
-        var input = parse(lines);
-        return input.Sum(l => l.Count);
+        data = lines;
     }
 
-    public long part2(string[] lines)
+    public long part1()
     {
-        var input = parse(lines);
-        return input.Sum(l => l.Count);
-    }
+        int count = 0;
 
-    public List<List<string>> parse(string[] lines)
-    {
-        List<List<string>> result = new List<List<string>>();
-
-        string pattern = @"\d+";
-        Regex regex = new Regex(pattern);
-        foreach(string line in lines)
+        for (int x = 0; x < data[0].Length; x++)
         {
-            List<string> lineResult = new List<string>();
-            result.Add(lineResult);
-
-            MatchCollection matches = regex.Matches(line);
-            for (int i = 0; i < matches.Count; i++)
+            for (int y = 0; y < data.Length; y++)
             {
-                lineResult.Add(matches[i].Groups[0].Value);
+                for (int dx = -1; dx <= 1; dx++)
+                {
+                    for (int dy = -1; dy <= 1; dy++)
+                    {
+                        if (match(pattern, x, y, dx, dy)) count++;
+                    }
+                }
             }
-
         }
-        return result;
+
+        return count;
     }
 
+    public long part2()
+    {
+        int count = 0;
+
+        for (int x = 1; x < data[0].Length - 1; x++)
+        {
+            for (int y = 1; y < data.Length - 1; y++)
+            {
+                if (get(x, y) == 'A') {
+
+                    if (
+                        ((get(x-1, y-1) == 'M' && get(x+1, y+1) == 'S') ||
+                        (get(x-1, y-1) == 'S' && get(x+1, y+1) == 'M'))
+                        &&
+                        ((get(x+1, y-1) == 'M' && get(x-1, y+1) == 'S') ||
+                        (get(x+1, y-1) == 'S' && get(x-1, y+1) == 'M'))
+                    ) {
+                        count++;
+                    }
+                }
+            }
+        }
+        return count;
+    }
+
+    public char get(int x, int y)
+    {
+        if (x < 0 || x > data[0].Length - 1 ||
+            y < 0 || y > data.Length - 1)
+        {
+            return '\0';
+        }
+        else
+        {
+            return (char)data[y][x];
+        }
+    }
+
+    public bool check(char v, int x, int y)
+    {
+        return v == get(x, y);
+    }
+
+    public bool match(string pattern, int x, int y, int dx, int dy)
+    {
+        for (int i = 0; i < pattern.Length; i++)
+        {
+            int cx = x + dx * i;
+            int cy = y + dy * i;
+            char v = pattern[i];
+
+            if (!check(v, cx, cy)) return false;
+        }
+
+        return true;
+    }
 }

@@ -6,16 +6,15 @@ class Program
 {
     static void Main(string[] args)
     {
-        Solver solver = new Solver();
         string[] filenames = { "input-sample.txt", "input.txt" };
 
         foreach (string filename in filenames)
         {
-            execute(solver, filename);
+            execute(filename);
         }
     }
 
-    static void execute(Solver solver, string filename)
+    static void execute(string filename)
     {
         string prefix = "-- ";
         string suffix = " ";
@@ -28,9 +27,10 @@ class Program
         try
         {
             lines = File.ReadAllLines(filename);
+            Solver solver = new Solver(lines);
 
-            var part1 = solver.part1(lines);
-            var part2 = solver.part2(lines);
+            var part1 = solver.part1();
+            var part2 = solver.part2();
 
             Console.WriteLine($"part1: {part1}");
             Console.WriteLine($"part2: {part2}");
