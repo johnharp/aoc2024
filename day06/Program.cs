@@ -24,7 +24,7 @@ class Program
 
         try
         {
-            Data data = new Data(filename);
+            AreaMap data = new AreaMap(filename);
             Solver solver = new Solver(data);
 
             var part1 = solver.part1();

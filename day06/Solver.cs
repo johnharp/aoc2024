@@ -8,27 +8,49 @@ using System.Data;
 
 public class Solver
 {
-    Data data;
+    AreaMap OriginalMap;
 
-    public Solver(Data suppliedData)
+    public Solver(AreaMap map)
     {
-        data = suppliedData;
+        OriginalMap = map;
     }
 
     public long part1()
     {
-        while(data.IsOnTheMap())
+        AreaMap map = new AreaMap(OriginalMap);
+        while (map.IsOnTheMap())
         {
-            data.Move();
+            map.Move();
         }
-        return data.NumVisitedSites();
+
+        return map.VisitedLocs.Count;
     }
 
     public long part2()
     {
-        long solution = 0;
+        long loopsFound = 0;
+        AreaMap map = new AreaMap(OriginalMap);
 
-        return solution;
+        // Solve it once to find the original path
+        while (map.IsOnTheMap())
+        {
+            map.Move();
+        }
+
+        var locsToTry = map.VisitedLocs.ToList<(int, int)>();
+
+        foreach (var loc in locsToTry)
+        {
+            AreaMap newmap = new AreaMap(OriginalMap);
+            newmap.Obstructions.Add(loc);
+            while (newmap.IsOnTheMap() && !newmap.LoopDetected) {
+                newmap.Move();
+            }
+
+            if (newmap.LoopDetected) loopsFound++;
+        }
+        
+        return loopsFound;
     }
 
 }
