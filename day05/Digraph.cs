@@ -5,20 +5,16 @@ namespace day05;
 
 public class Digraph
 {
-    private readonly int _V;
-    private int _E;
-    private readonly HashSet<int>[] _adj;
+    private int _V; // number of verts
+    private int _E; // number of edges
+    private readonly Dictionary<int, HashSet<int>>_adj;
 
-    public Digraph(int V)
+    public Digraph()
     {
-        _V = V;
+        _V = 0;
         _E = 0;
 
-        _adj = new HashSet<int>[V];
-        for (int v = 0; v < V; v++)
-        {
-            _adj[v] = [];
-        }
+        _adj = new Dictionary<int, HashSet<int>>();
     }
 
     public int V()
@@ -33,6 +29,18 @@ public class Digraph
 
     public void AddEdge(int v, int w)
     {
+        if (!_adj.Keys.Contains(v))
+        {
+            _adj.Add(v, new HashSet<int>());
+            _V++;
+        }
+
+        if (!_adj.ContainsKey(w))
+        {
+            _adj.Add(w, new HashSet<int>());
+            _V++;
+        }
+
         _adj[v].Add(w);
         _E++;
     }
@@ -44,7 +52,7 @@ public class Digraph
 
     public Digraph Reverse()
     {
-        Digraph R = new Digraph(_V);
+        Digraph R = new Digraph();
         for (int v = 0; v < _V; v++)
         {
             foreach(int w in _adj[v])
@@ -65,5 +73,40 @@ public class Digraph
             if (!_adj[v].Contains(w)) return false;
         }
         return true;
+    }
+
+    private void TopologicalSortUtil(int v, HashSet<int> visited, Stack<int> stack)
+    {
+        visited.Add(v);
+        foreach (var neightbor in _adj[v])
+        {
+            if (!visited.Contains(neightbor))
+            {
+                TopologicalSortUtil(neightbor, visited, stack);
+            }
+        }
+        stack.Push(v);
+    }
+
+    public List<int> TopologicalSort()
+    {
+        Stack<int> stack = new Stack<int>();
+        HashSet<int> visited = new HashSet<int>();
+
+        foreach (int v in _adj.Keys)
+        {
+            if (!visited.Contains(v))
+            {
+                TopologicalSortUtil(v, visited, stack);
+            }
+        }
+
+        List<int> sortedNodeOrder = new List<int>();
+        while (stack.Count > 0)
+        {
+            sortedNodeOrder.Add(stack.Pop());
+        }
+
+        return sortedNodeOrder;
     }
 }

@@ -28,9 +28,9 @@ class Program
             Solver solver = new Solver(input);
 
             var part1 = solver.part1();
-            var part2 = solver.part2();
-
             Console.WriteLine($"part1: {part1}");
+
+            var part2 = solver.part2();
             Console.WriteLine($"part2: {part2}");
             Console.WriteLine();
         }

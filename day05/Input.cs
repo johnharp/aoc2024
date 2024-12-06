@@ -4,8 +4,9 @@ namespace day05;
 
 public class Input
 {
-    public Digraph RulesGraph = new Digraph(100);
+    public Digraph RulesGraph = new Digraph();
     public List<List<int>> Updates = new List<List<int>>();
+    public List<int> SortedNodes = new List<int>();
 
     public Input(string filename)
     {
@@ -38,6 +39,8 @@ public class Input
                 Updates.Add(numbers);
             }
         }
+
+        SortedNodes = RulesGraph.TopologicalSort();
     }
 
 }
