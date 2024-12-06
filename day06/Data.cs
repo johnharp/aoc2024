@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
+using System.Windows.Markup;
 
 namespace day06;
 
@@ -13,7 +14,7 @@ public class Data
     private static char visitedChar = 'X';
 
     private string guardSymbols = $"[{leftChar}{rightChar}{upChar}{downChar}]";
-    private readonly List<string> _lines = new List<string>();
+    private readonly List<char[]> _lines = new List<char[]>();
     private int _width = 0;
     private int _height = 0;
     private int _currX = 0;
@@ -30,7 +31,7 @@ public class Data
         int y = 0;
         foreach (string line in lines)
         {
-            _lines.Add(line);
+            _lines.Add(line.ToCharArray());
             _height++;
 
             Match match = Regex.Match(line, guardSymbols);
@@ -107,9 +108,7 @@ public class Data
         }
         else
         {
-            char[] values = _lines[y].ToCharArray();
-            values[x] = value;
-            _lines[y] = new string(values);
+            _lines[y][x] = value;
         }
     }
 
