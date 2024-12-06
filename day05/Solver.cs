@@ -4,11 +4,11 @@ using System.Text.RegularExpressions;
 using System.Linq;
 using System.Xml.Schema;
 using System.Collections.Immutable;
+using System.Data;
 
 public class Solver
 {
     Input input;
-
 
     public Solver(Input suppliedInput)
     {
@@ -19,43 +19,18 @@ public class Solver
     {
         long solution = 0;
 
-        for (int i = 0; i < input.UpdatePageNumbersList.Count; i++)
+        foreach(var update in input.Updates)
         {
-            var update = input.UpdatePageNumbersList[i];
-
-            if (isUpdateValid(update))
+            if (input.RulesGraph.TestPath(update))
             {
-                int middleIndex = update.Count / 2;
-                string middlePage = update[middleIndex];
-                solution += long.Parse(middlePage);
+                int midpoint = update.Count/2;
+                int midvalue = update[midpoint];
+
+                solution += midvalue;
             }
         }
+
         return solution;
-    }
-
-    private bool isUpdateValid(List<string> update)
-    {
-        for (int j = 0; j < update.Count; j++)
-        {
-            string page = update[j];
-
-            if (input.PrecededByRules.Keys.Contains(page))
-            {
-                HashSet<string> preceededBy = input.PrecededByRules[page];
-                // we only need to check the reamining pages in the update
-                // if the current page has any preceededBy rules
-                for (int k = j + 1; k < update.Count; k++)
-                {
-                    string pageAfter = update[k];
-                    if (preceededBy.Contains(pageAfter)) {
-                        // invalid rule
-                        return false;
-                    }
-                }
-
-            }
-        }
-        return true;
     }
 
     public long part2()

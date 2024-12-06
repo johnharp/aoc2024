@@ -24,7 +24,6 @@ class Program
 
         try
         {
-            //lines = File.ReadAllLines(filename);
             Input input = new Input(filename);
             Solver solver = new Solver(input);
 

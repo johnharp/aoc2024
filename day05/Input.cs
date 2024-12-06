@@ -1,11 +1,11 @@
+using System.Globalization;
+
 namespace day05;
 
 public class Input
 {
-    public List<List<string>> UpdatePageNumbersList = new List<List<string>>();
-    public List<Dictionary<string, int>> UpdatePageNumbersIndexesList = new List<Dictionary<string,int>>();
-
-    public Dictionary<string, HashSet<string>> PrecededByRules = new Dictionary<string, HashSet<string>>();
+    public Digraph RulesGraph = new Digraph(100);
+    public List<List<int>> Updates = new List<List<int>>();
 
     public Input(string filename)
     {
@@ -24,42 +24,20 @@ public class Input
             if (!sectionSeparatorFound) {
                 // Handle first section of input
                 var parts = line.Split("|");
-                string first = parts[0];
-                string after = parts[1];
 
-                if (!PrecededByRules.Keys.Contains(after))
-                {
-                    PrecededByRules[after] = new HashSet<string>();
-                }
-                PrecededByRules[after].Add(first);
+                int v = int.Parse(parts[0]);
+                int w = int.Parse(parts[1]);
+
+                RulesGraph.AddEdge(v, w);
             }
             else
             {
                 // Handle second section of input
                 var parts = line.Split(",");
-                var pageNumbersList = new List<string>(parts);
-                UpdatePageNumbersList.Add(pageNumbersList);
-                var index = indexPages(pageNumbersList);
-                UpdatePageNumbersIndexesList.Add(index);
+                List<int> numbers = parts.Select(x => int.Parse(x)).ToList();
+                Updates.Add(numbers);
             }
         }
     }
 
-    private static Dictionary<string, int> indexPages(List<string> pageNumbers)
-    {
-        Dictionary<string, int> index = new Dictionary<string, int>();
-        for (int i = 0; i < pageNumbers.Count;  i++)
-        {
-            string pageNumber = pageNumbers[i];
-            if (index.Keys.Contains(pageNumber))
-            {
-                throw new Exception("Unexpected condition -- page number appears twice in one line");
-            }
-            else
-            {
-                index[pageNumber] = i;
-            }
-        }
-        return index;
-    }
 }
