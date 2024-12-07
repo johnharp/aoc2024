@@ -1,8 +1,4 @@
-using System.ComponentModel.DataAnnotations;
-using System.Globalization;
-using System.Reflection.Metadata.Ecma335;
-using System.Security.Cryptography.X509Certificates;
-
+using System.Numerics;
 namespace day07;
 
 public class Solver
@@ -16,15 +12,15 @@ public class Solver
         data = suppliedData;
     }
 
-    public long part1()
+    public BigInteger part1()
     {
-        long count = 0;
-        long sum = 0;
+        BigInteger count = 0;
+        BigInteger sum = 0;
 
         for (int i = 0; i < data.Results.Count; i++)
         {
-            long targetResult = data.Results[i];
-            List<long> operands = data.Operands[i];
+            BigInteger targetResult = data.Results[i];
+            List<BigInteger> operands = data.Operands[i];
 
             var opCombos = GetPermutations(availableOps, operands.Count - 1).ToList();
 
@@ -42,7 +38,7 @@ public class Solver
         return sum;
     }
 
-    public long part2()
+    public BigInteger part2()
     {
         return 0;
     }
@@ -65,14 +61,14 @@ public class Solver
         return ret;
     }
 
-    public long compute(List<long> operands, List<char> operations)
+    public BigInteger compute(List<BigInteger> operands, List<char> operations)
     {
         if (operations.Count != operands.Count - 1 || operands.Count < 2)
         {
             throw new ArgumentException("Must have at least 2 operands and one fewer operation than operands");
         }
 
-        long acc = operands[0];
+        BigInteger acc = operands[0];
         for (int i = 1; i < operands.Count; i++)
         {
             if (operations[i - 1] == '*')
