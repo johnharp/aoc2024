@@ -21,11 +21,7 @@ public class Solver
                 var antinodes = Antinodes(pair.Item1, pair.Item2);
                 foreach(var antinode in antinodes)
                 {
-                    if (antinode.Item1 >= 0 && antinode.Item1 < model.Width &&
-                        antinode.Item2 >= 0 && antinode.Item2 < model.Height)
-                    {
-                        AllAntinodes.Add(antinode);
-                    }
+                    if (IsOnTheBoard(antinode)) AllAntinodes.Add(antinode);
                 }
             }
         }
@@ -33,9 +29,32 @@ public class Solver
         return AllAntinodes.Count;
     }
 
+
+
     public BigInteger part2()
     {
-        return 0;
+        HashSet<(int, int)> AllAntinodes = new HashSet<(int, int)> ();
+
+        foreach (char c in model.AntennaDictionary.Keys)
+        {
+            var pairs = GetPairs(model.AntennaDictionary[c]);
+            foreach(var pair in pairs)
+            {
+                var antinodes = AntinodesPart2(pair.Item1, pair.Item2);
+                foreach(var antinode in antinodes)
+                {
+                    if (IsOnTheBoard(antinode)) AllAntinodes.Add(antinode);
+                }
+            }
+        }
+
+        return AllAntinodes.Count;
+    }
+
+    public bool IsOnTheBoard((int, int) pt)
+    {
+        return (pt.Item1 >= 0 && pt.Item1 < model.Width && 
+            pt.Item2 >=0 && pt.Item2 < model.Height);
     }
 
     public List<((int, int),(int,int))> GetPairs(List<(int,int)> items)
@@ -81,6 +100,34 @@ public class Solver
 
         antinodes.Add((pt1.Item1 - dist.Item1, pt1.Item2 - dist.Item2));
         antinodes.Add((pt2.Item1 + dist.Item1, pt2.Item2 + dist.Item2));
+
+        return antinodes;
+    }
+
+    public List<(int, int)> AntinodesPart2((int, int) pt1, (int, int) pt2)
+    {
+        (int, int) dist = Distance(pt1, pt2);
+        List<(int,int)> antinodes = new List<(int, int)>();
+
+        (int, int) point = pt1;
+        int i = 1;
+        while (IsOnTheBoard(point))
+        {
+            antinodes.Add(point);
+
+            point = (pt1.Item1 - (i*dist.Item1), pt1.Item2 - (i*dist.Item2));
+            i++;
+        }
+
+        point = pt1;
+        i = 1;
+        while (IsOnTheBoard(point))
+        {
+            antinodes.Add(point);
+
+            point = (pt1.Item1 + (i*dist.Item1), pt1.Item2 + (i*dist.Item2));
+            i++;
+        }
 
         return antinodes;
     }
